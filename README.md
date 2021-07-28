@@ -1,4 +1,4 @@
 # MentorNet
 pytorch version
 
-well, I'm working on it, nothing happens in this repo.
+well, I'm still working on it, nothing happens in this repo right now.
