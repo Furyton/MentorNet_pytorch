@@ -123,7 +123,7 @@ class trainer(metaclass=ABCMeta):
                 tot_batch += 1
                 
                 if self.show_process_bar:
-                    iterator.set_description('Epoch {}, loss {:.3f} '.format(epoch + 1, tot_loss / tot_batch))
+                    iterator.set_description('test loss {:.3f} '.format(tot_loss / tot_batch))
         
         print('test loss=', tot_loss / tot_batch)
 
