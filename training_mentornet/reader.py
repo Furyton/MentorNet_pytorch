@@ -17,7 +17,6 @@ class Dataset(data_utils.Dataset):
         self._epochs_completed = 0
         self._index_in_epoch = 0    
 
-    @property
     def __len__(self) -> int:
         return self._num_examples
     
@@ -30,7 +29,10 @@ class Dataset(data_utils.Dataset):
         return False
 
     def __getitem__(self, index: int):
-        return self._data[index]
+        return torch.tensor(self._data[index])
 
-def get_train_dataloader(data_path: str, split_name: str, device: str='cpu', batch_size: int=32, worker_num: int=2):
-    return data_utils.DataLoader(Dataset(data_path, split_name), batch_size=batch_size, shuffle=True, num_workers=worker_num,pin_memory=True)
+def get_train_dataloader(data_path: str, device: str='cpu', batch_size: int=32, worker_num: int=2):
+    return data_utils.DataLoader(Dataset(data_path, 'tr'), batch_size=batch_size, shuffle=True, num_workers=worker_num,pin_memory=True)
+
+def get_test_dataloader(data_path: str, device: str='cpu', batch_size: int=32, worker_num: int=2):
+    return data_utils.DataLoader(Dataset(data_path, 'ts'), batch_size=batch_size ,num_workers=worker_num,pin_memory=True)
