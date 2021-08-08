@@ -52,7 +52,7 @@ def generate_data_driven(input_csv_filename,
   """
   raw = read_from_csv(input_csv_filename)
 
-  raw = np.array(raw.values())
+  raw = np.array([i for i in raw.values()])
   dataset_name = os.path.splitext(os.path.basename(input_csv_filename))[0]
 
   percentile_range = percentile_range.split(',')

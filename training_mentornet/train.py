@@ -1,8 +1,8 @@
 import os
-import tqdm
+from tqdm import tqdm
 import utils
 import torch
-import reader
+from . import reader
 import datetime
 import numpy as np
 from abc import ABCMeta
@@ -74,6 +74,7 @@ class trainer(metaclass=ABCMeta):
 
             if cur_loss < val_loss:
                 print(f'progress')
+                val_loss = cur_loss
                 self.save('best')
 
             self.lr_sheduler.step()
@@ -84,7 +85,7 @@ class trainer(metaclass=ABCMeta):
     def train_one_epoch(self, epoch):
         self.model.train()
 
-        iterator = self.train_dataLoader if not self.show_process_bar else tqdm(self.train_dataLoader)
+        iterator = self.train_dataLoader if not self.show_progress_bar else tqdm(self.train_dataLoader)
 
         tot_loss = 0
         tot_batch = 0
@@ -102,7 +103,7 @@ class trainer(metaclass=ABCMeta):
 
             self.optim.step()
 
-            if self.show_process_bar:
+            if self.show_progress_bar:
                 iterator.set_description('Epoch {}, loss {:.3f} '.format(epoch + 1, tot_loss / tot_batch))
             
         print(f'epoch: {epoch}, train loss: {tot_loss / tot_batch}')
@@ -114,7 +115,7 @@ class trainer(metaclass=ABCMeta):
         tot_batch = 0
 
         with torch.no_grad():
-            iterator = self.test_dataLoader if not self.show_process_bar else tqdm(self.test_dataLoader)
+            iterator = self.test_dataLoader if not self.show_progress_bar else tqdm(self.test_dataLoader)
 
             for batch_idx, batch in enumerate(iterator):
                 loss = self.calculate_loss(batch)
@@ -122,7 +123,7 @@ class trainer(metaclass=ABCMeta):
                 tot_loss += loss.item()
                 tot_batch += 1
                 
-                if self.show_process_bar:
+                if self.show_progress_bar:
                     iterator.set_description('test loss {:.3f} '.format(tot_loss / tot_batch))
         
         print('test loss=', tot_loss / tot_batch)
@@ -130,7 +131,7 @@ class trainer(metaclass=ABCMeta):
         return tot_loss / tot_batch
 
     def calculate_loss(self, batch:torch.Tensor):
-        v_truth = batch[:, 4].reshape(self.mini_batch_size, 1)
+        v_truth = batch[:, 4].reshape(-1, 1)
         input_data = batch[:, 0:4]
 
         v = self.model(input_data)
@@ -143,4 +144,4 @@ class trainer(metaclass=ABCMeta):
         return loss
     
     def save(self, tag: str):
-        torch.save({'model_state_dict': self.model.state_dict, 'optimizer_state_dict': self.optim.state_dict}, os.path.join(self.train_dir, '{}-{}.model'.format(tag, datetime.datetime.now())))
+        torch.save({'model_state_dict': self.model.state_dict(), 'optimizer_state_dict': self.optim.state_dict()}, os.path.join(self.train_dir, '{}.model'.format(tag)))

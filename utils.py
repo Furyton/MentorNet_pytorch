@@ -44,7 +44,7 @@ class MentorNet_nn(torch.nn.Module):
         losses = input_features[:, 0]
         loss_diffs = input_features[:, 1]
 
-        lstm_inputs = torch.stack([losses, loss_diffs], dim=-1).to(self.device)
+        lstm_inputs = torch.stack([losses, loss_diffs], dim=-1).to(self.device).to(torch.float32)
 
         if len(losses.shape) <= 1:
             num_steps = 1
@@ -54,6 +54,7 @@ class MentorNet_nn(torch.nn.Module):
 
         # lstm_inputs should be B x N x 2 
         # where N is the num_steps, B is the batch size
+
 
         lstm_output, _ = self.bi_lstm_cell(lstm_inputs)
 
