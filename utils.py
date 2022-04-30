@@ -59,7 +59,7 @@ class MentorNet_nn(torch.nn.Module):
         lstm_output, _ = self.bi_lstm_cell(lstm_inputs)
 
         # lstm_output should be B x N x 2 
-        # where '2' is due to bidirectory setting
+        # where '2' is due to bidirectional setting
 
         loss_variance = lstm_output.sum(1) # B x 2
 
@@ -141,7 +141,7 @@ class MentorNet(torch.nn.Module):
         
         v_zeros = torch.zeros(loss.size(), dtype=torch.float32).to(self.device)
 
-        upper_bound = torch.where(cur_epoch < burn_in_epoch - 1, v_zeros, v_ones).to(self.device)
+        upper_bound = torch.where(cur_epoch < burn_in_epoch - 1, v_ones, v_zeros).to(self.device)
         
         # TODO dangerous here
         this_dropout_rate = example_dropout_rates[cur_epoch][0][0]
