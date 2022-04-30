@@ -39,3 +39,4 @@ UPDATE:
 - 8.4.2020: add dataset, dataloader and data_generator. the origin tf version didn't use much 'tf' in this part, so I just copy that here.
 - 8.7.2020: add MentorNet trainer class, HAVEN'T TESTED.
 - 8.8.2020: MentorNet_nn can be trained using trainer in train.py. The training loss is decreasing, so I guess it works to some extend.
+- 4.30.2022: fix issue [#1](https://github.com/Furyton/MentorNet_pytorch/issues/1#issue-1221720127), where the `upper_bound` in `utils.py` is wrong :(
